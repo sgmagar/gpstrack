@@ -61,12 +61,8 @@ app.use(function(err, req, res, next) {
 
 // Socket From here
 io.on('connection', function(socket){
-  socket.on('test', function (data){
-    socket.emit('test', data);
-  });
-
-  socket.on('question_data', function (data) {  
-    socket.emit('question_data', data);
+  socket.on('querydate', function (data){
+    socket.emit('datedata', data);
   });
 });
 

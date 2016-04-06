@@ -20,6 +20,9 @@
     	height: 500px;
     	margin-top: 10px;
     }
+    .left{
+    	margin-left: -1em;
+    }
     </style>
     
 
@@ -27,6 +30,7 @@
 <body>
 	<div class="container">
 		<div class="title">GPS Tracking</div>
+		<div id="date-select"></div>Date:<span id="returndate"></span>
 		<div class="btn btn-primary" onclick="plotmarker();">Plot Marker</div>
 		<div id='map'></div>
 	</div>
@@ -81,37 +85,28 @@
 	        }
 		}
     	
-    	// var questionlist = [];
-    	// socket.on('question_data', function (data) {
-    	// 	questionlist.push(data);
-    	// 	React.render(<QuestionList qlist={questionlist} />, document.getElementById('questionlist'));
 
-    	// });
-
-    	var QuestionForm = React.createClass({
-    		saveQuestion: function() {
-    			var question = this.refs.question.getDOMNode();
-                var detail = this.refs.detail.getDOMNode();
+    	var DateElement = React.createClass({
+    		sendDate: function() {
+    			var date = this.refs.date.getDOMNode();
                 var data = {
-                	'question': question.value,
-                	'detail': detail.value 
+                	'date': date.value,
                 }
-                socket.emit('question_data', data);
-                question.value = '';
-                detail.value = '';
+                socket.emit('querydate', data);
+                date.value = '';
     		},
     		render: function(){
                 return(
                     <div>
-	                    <p className="form-group">
-	                        Question: 
-	                        <input type='text' className="form-control" name='question' ref='question' />
-	                        
-	                        Detail:
-	                        <textarea  id='qdetail' className="form-control" name='detail' ref='detail' />
-	                     	
-	                    </p>
-	                    <button onClick={this.saveQuestion} className="btn btn-primary">Save Question</button>
+	     				
+	                    
+	                    <div>Enter Date to Find Info</div>
+	                    <div className="col-md-2 left">
+	                        <input type='date' className="form-control" id="date" name='date' ref='date' placeholder="Enter Date"/>
+	                    </div>
+	                    <div className="col-md-3">
+	                    	<button onClick={this.sendDate} className="btn btn-primary">Find Info</button>
+	                    </div>
                     </div>
                         
                     
@@ -119,7 +114,14 @@
             }
     	});
 
-    	// React.render(<QuestionForm />, document.getElementById('questionform'));
+    	React.render(<DateElement />, document.getElementById('date-select'));
+
+
+
+    	socket.on('datedata', function (data) {
+    		console.log(data.date);
+    		$('#returndate').html(data.date);
+    	});
 
     </script>
 </body>
