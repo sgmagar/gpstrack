@@ -22,10 +22,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script> 
 
-    <script type="text/javascript" src='socket.io/socket.io.js'></script>
+    <script type="text/javascript" src='http://ramrodeals.com/socket.io/socket.io.js'></script>
 
     <script type="text/jsx">
-    	var socket = io();
+    	var socket = io.connect('http://ramrodeals.com:80/', {query: {extra_info : extra_info}});
 
     	socket.emit('test', {'name':'test', 'description': 'This is the testing'});
 
