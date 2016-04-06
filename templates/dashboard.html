@@ -12,6 +12,8 @@
 	<div class="container">
 
 		<h1>Dashboard</h1>
+		<div id="questionlist" ></div>
+		<div id="questionform" ></div>
 
 	</div>
 
@@ -22,7 +24,7 @@
 
     <script type="text/javascript" src='socket.io/socket.io.js'></script>
 
-    <script type="text/javascript">
+    <script type="text/jsx">
     	var socket=io();
 
     	socket.emit('test', {'name':'test', 'description': 'This is the testing'});
@@ -30,6 +32,67 @@
     	socket.on('test', function (data) {
     		console.log(data);
     	});
+    	var questionlist = [];
+    	socket.on('question_data', function (data) {
+    		questionlist.push(data);
+    		React.render(<QuestionList qlist={questionlist} />, document.getElementById('questionlist'));
+
+    	});
+
+    	var QuestionList = React.createClass({
+        	
+            render: function(){
+                return(
+                        <div>
+                            {this.props.qlist.map(function (option){
+                                return(
+                                    <div key={option.question}>
+                                    	<div className='row'>
+		                                    <div className='col-md-10'>
+		                                    	{option.question}: {option.detail}
+		                                    </div>
+		                                 
+			                            </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    );
+            }
+        });
+
+    	var QuestionForm = React.createClass({
+    		saveQuestion: function() {
+    			var question = this.refs.question.getDOMNode();
+                var detail = this.refs.detail.getDOMNode();
+                var data = {
+                	'question': question.value,
+                	'detail': detail.value 
+                }
+                socket.emit('question_data', data);
+                question.value = '';
+                detail.value = '';
+    		},
+    		render: function(){
+                return(
+                    <div>
+	                    <p className="form-group">
+	                        Question: 
+	                        <input type='text' className="form-control" name='question' ref='question' />
+	                        
+	                        Detail:
+	                        <textarea  id='qdetail' className="form-control" name='detail' ref='detail' />
+	                     	
+	                    </p>
+	                    <button onClick={this.saveQuestion} className="btn btn-primary">Save Question</button>
+                    </div>
+                        
+                    
+                );
+            }
+    	});
+
+    	React.render(<QuestionForm />, document.getElementById('questionform'));
 
     </script>
 </body>

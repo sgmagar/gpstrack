@@ -64,6 +64,10 @@ io.on('connection', function(socket){
   socket.on('test', function (data){
     socket.emit('test', data);
   });
+
+  socket.on('question_data', function (data) {  
+    socket.emit('question_data', data);
+  });
 });
 
 
