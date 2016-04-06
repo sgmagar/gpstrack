@@ -25,7 +25,7 @@
     <script type="text/javascript" src='http://ramrodeals.com/socket.io/socket.io.js'></script>
 
     <script type="text/jsx">
-    	var socket = io.connect('http://ramrodeals.com:80/', {query: {extra_info : extra_info}});
+    	var socket = io.connect('http://ramrodeals.com/', {port: 80});
 
     	socket.emit('test', {'name':'test', 'description': 'This is the testing'});
 
