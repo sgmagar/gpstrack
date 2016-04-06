@@ -5,61 +5,88 @@
 
 	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">  
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="/leaflet/leaflet.css" />
+
+    <style type="text/css">
+    .title{
+    	margin-top: 80px;
+    	font-size: 25px;
+    	font-weight: bold;
+    	color: green;
+    	text-align: center;
+    }
+    #map{
+    	height: 500px;
+    	margin-top: 10px;
+    }
+    </style>
     
 
 </head>
 <body>
 	<div class="container">
-
-		<h1>Dashboard</h1>
-		<div id="questionlist" ></div>
-		<div id="questionform" ></div>
-
+		<div class="title">GPS Tracking</div>
+		<div class="btn btn-primary" onclick="plotmarker();">Plot Marker</div>
+		<div id='map'></div>
 	</div>
+
+
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/react.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.13.3/JSXTransformer.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script> 
-
-    <script type="text/javascript" src='http://ramrodeals.com/socket.io/socket.io.js'></script>
-
+    <script src="/leaflet/leaflet.js"></script>
+    <!--<script type="text/javascript" src='http://ramrodeals.com/socket.io/socket.io.js'></script> -->
+    <script type="text/javascript" src='/socket.io/socket.io.js'></script>
     <script type="text/jsx">
-    	var socket = io.connect('http://ramrodeals.com/', {port: 80});
+    	// var socket = io.connect('http://ramrodeals.com/', {port: 80});
+    	var socket = io();
+    	var my_latitude = 27.68851;
+		var my_longitude = 85.33557;
 
-    	socket.emit('test', {'name':'test', 'description': 'This is the testing'});
+		var map = L.map('map',{
+		                center: [my_latitude, my_longitude],
+		                zoom: 13
+		            });  
+		L.tileLayer('http://{s}.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png', {
+		            attribution: '&copy; <a href="#" title="OpenStreetMap" target="_blank">OpenStreetMap</a> contributors Tiles Courtesy of <a href="http://www.facebook.com/saurav.gharti" title="MapQuest" target="_blank">Saurav Gharti<img src="icons/Photo0041.jpg" width="18" height="20"></a>',
+		        	subdomains: ['otile1','otile2','otile3','otile4']
+		}).addTo(map);
+		var marker = [];
+		function plotmarker(){
+			
+			var data = [{'latitude':'27.673580','longitude':'85.341698'},{'latitude':'27.674683','longitude':'85.343698'},{'latitude':'27.675625','longitude':'85.345698'}];
+			console.log(data.length);
+			var latt=0,lonn=0;
+			for( var i = 0; i < data.length; i++){
+	            lonn+=parseFloat(data[i].longitude);
+	            latt+=parseFloat(data[i].latitude);
+	            if(!marker[i]){
+	                marker[i]= L.marker([data[i].latitude,data[i].longitude]).addTo(map).
+	                    bindPopup("<h4><b>"+data[i].latitude+ ": " +data[i].longitude+"</b></h4><p>");
+	                marker[i].on('mouseover', function (e) {
+	                    this.openPopup();
+	                });
+	                marker[i].on('mouseout', function (e) {
+	                    this.closePopup();
+	                });
+	            }
+	            if(i==data.length-1){
+	            	console.log(marker.length)
+	                console.log(lonn/data.length);
+	                map.setView([latt/data.length,lonn/data.length],13);
+	            }
+	        }
+		}
+    	
+    	// var questionlist = [];
+    	// socket.on('question_data', function (data) {
+    	// 	questionlist.push(data);
+    	// 	React.render(<QuestionList qlist={questionlist} />, document.getElementById('questionlist'));
 
-    	socket.on('test', function (data) {
-    		console.log(data);
-    	});
-    	var questionlist = [];
-    	socket.on('question_data', function (data) {
-    		questionlist.push(data);
-    		React.render(<QuestionList qlist={questionlist} />, document.getElementById('questionlist'));
-
-    	});
-
-    	var QuestionList = React.createClass({
-        	
-            render: function(){
-                return(
-                        <div>
-                            {this.props.qlist.map(function (option){
-                                return(
-                                    <div key={option.question}>
-                                    	<div className='row'>
-		                                    <div className='col-md-10'>
-		                                    	{option.question}: {option.detail}
-		                                    </div>
-		                                 
-			                            </div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    );
-            }
-        });
+    	// });
 
     	var QuestionForm = React.createClass({
     		saveQuestion: function() {
@@ -92,7 +119,7 @@
             }
     	});
 
-    	React.render(<QuestionForm />, document.getElementById('questionform'));
+    	// React.render(<QuestionForm />, document.getElementById('questionform'));
 
     </script>
 </body>
