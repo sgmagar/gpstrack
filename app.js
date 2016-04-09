@@ -5,6 +5,9 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var redis = require('redis');
+
+var sub = redis.createClient(), pub = redis.createClient();
 
 var mongoose = require('mongoose'),
   assert = require('assert');
@@ -23,27 +26,38 @@ db.once('open', function () {
 
 })
 
-
-
 var dashboard = require('./routes/dashboard');
 
 var app = express();
 var http = require('http').createServer(app);
 
-var tcpServer = net.createServer(function (c) {
+var tcpServer = net.createServer(function (socket) {
   console.log('server connected');
-  c.on('end', function() {
+
+  socket.on('end', function() {
     console.log('server disconnected');
   });
-  c.write('hello\r\n');
-  c.pipe(c);
+  socket.on('data', function (data){
+    console.log(data.toString());
+    pub.publish("gpsdata", data.toString());
+  })
+
+  socket.write('hello\r\n');
+  socket.pipe(socket);
 });
 
 tcpServer.listen(3005,'128.199.162.102', function(){
-  console.log('server bound');
+// tcpServer.listen(3005,'192.168.0.103', function(){
+  console.log('Tcp server started on localhost:3005');
 });
 
 var io = require('socket.io')(http);
+
+sub.subscribe("gpsdata");
+sub.on("message", function (channel, message) {
+  console.log("sub-channel: "+channel+" message: "+ message);
+  io.emit('datedata', {"date": message});
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

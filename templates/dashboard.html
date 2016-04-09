@@ -117,9 +117,8 @@
     	React.render(<DateElement />, document.getElementById('date-select'));
 
 
-
     	socket.on('datedata', function (data) {
-    		console.log(data.date);
+    		console.log(data);
     		$('#returndate').html(data.date);
     	});
 
