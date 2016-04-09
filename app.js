@@ -39,7 +39,7 @@ var tcpServer = net.createServer(function (c) {
   c.pipe(c);
 });
 
-tcpServer.listen(3001,'localhost', function(){
+tcpServer.listen(3005,'128.199.162.102', function(){
   console.log('server bound');
 });
 
