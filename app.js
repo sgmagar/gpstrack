@@ -39,7 +39,7 @@ var tcpServer = net.createServer(function (c) {
   c.pipe(c);
 });
 
-tcpServer.listen(3001,'192.168.0.103', function(){
+tcpServer.listen(3001,'localhost', function(){
   console.log('server bound');
 });
 
@@ -82,7 +82,7 @@ io.on('connection', function(socket){
 
 
 
-http.listen(3000,'192.168.0.103', function(){
+http.listen(3000,'localhost', function(){
   console.log('listening on http://localhost:' + 3000+'/');
 });
 
