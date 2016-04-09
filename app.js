@@ -1,4 +1,5 @@
 var express = require('express');
+var net = require('net');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -28,6 +29,19 @@ var dashboard = require('./routes/dashboard');
 
 var app = express();
 var http = require('http').createServer(app);
+
+var tcpServer = net.createServer(function (c) {
+  console.log('server connected');
+  c.on('end', function() {
+    console.log('server disconnected');
+  });
+  c.write('hello\r\n');
+  c.pipe(c);
+});
+
+tcpServer.listen(3001,'192.168.0.103', function(){
+  console.log('server bound');
+});
 
 var io = require('socket.io')(http);
 
@@ -68,7 +82,7 @@ io.on('connection', function(socket){
 
 
 
-http.listen(3000,'localhost', function(){
+http.listen(3000,'192.168.0.103', function(){
   console.log('listening on http://localhost:' + 3000+'/');
 });
 
