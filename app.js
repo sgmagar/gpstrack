@@ -34,11 +34,17 @@ var http = require('http').createServer(app);
 var tcpServer = net.createServer(function (socket) {
   console.log('server connected');
 
+  socket.on('error', function (err) {
+    console.log("Caught flash policy server socket error: ")
+    console.log(err.stack)
+  });
+
   socket.on('end', function() {
     console.log('server disconnected');
   });
   socket.on('data', function (data){
     console.log(data.toString());
+    socket.write('hello\r\n');
     pub.publish("gpsdata", data.toString());
   })
 
@@ -46,7 +52,7 @@ var tcpServer = net.createServer(function (socket) {
   socket.pipe(socket);
 });
 
-tcpServer.listen(3005,'128.199.162.102', function(){
+tcpServer.listen(3005,'139.59.239.80', function(){
 // tcpServer.listen(3005,'192.168.0.103', function(){
   console.log('Tcp server started on localhost:3005');
 });
