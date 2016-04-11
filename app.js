@@ -52,8 +52,8 @@ var tcpServer = net.createServer(function (socket) {
   socket.pipe(socket);
 });
 
-// tcpServer.listen(3005,'139.59.239.80', function(){
-tcpServer.listen(3005,'192.168.0.100', function(){
+tcpServer.listen(3005,'139.59.239.80', function(){
+// tcpServer.listen(3005,'192.168.0.100', function(){
   console.log('Tcp server started on localhost:3005');
 });
 
@@ -102,10 +102,10 @@ io.on('connection', function(socket){
 
 
 
-http.listen(3000,'0.0.0.0', function(){
-  console.log('listening on http://localhost:' + 3000+'/');
-});
-// http.listen(3000,'localhost', function(){
+// http.listen(3000,'0.0.0.0', function(){
 //   console.log('listening on http://localhost:' + 3000+'/');
 // });
+http.listen(3000,'localhost', function(){
+  console.log('listening on http://localhost:' + 3000+'/');
+});
 
