@@ -45,17 +45,15 @@ var tcpServer = net.createServer(function (socket) {
   socket.on('data', function (data){
     console.log(data.toString());
     socket.write('hello\r\n');
-    if(data.toString){
-      pub.publish("gpsdata", data.toString());
-    }
+    pub.publish("gpsdata", data.toString());
   })
 
   socket.write('hello\r\n');
   socket.pipe(socket);
 });
 
-tcpServer.listen(3005,'139.59.239.80', function(){
-// tcpServer.listen(3005,'192.168.0.100', function(){
+// tcpServer.listen(3005,'139.59.239.80', function(){
+tcpServer.listen(3005,'192.168.0.100', function(){
   console.log('Tcp server started on localhost:3005');
 });
 
@@ -76,7 +74,9 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(coohttp.listen(3000,'0.0.0.0', function(){
+  console.log('listening on http://localhost:' + 3000+'/');
+});kieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', dashboard);
@@ -104,7 +104,10 @@ io.on('connection', function(socket){
 
 
 
-http.listen(3000,'localhost', function(){
+http.listen(3000,'0.0.0.0', function(){
   console.log('listening on http://localhost:' + 3000+'/');
 });
+// http.listen(3000,'localhost', function(){
+//   console.log('listening on http://localhost:' + 3000+'/');
+// });
 

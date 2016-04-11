@@ -119,7 +119,8 @@
 
     	socket.on('datedata', function (data) {
     		console.log(data);
-    		$('#returndate').html(data.date);
+    		document.getElementById('returndate').innerHTML='';
+    		document.getElementById('returndate').innerHTML=data.date;
     	});
 
     </script>
