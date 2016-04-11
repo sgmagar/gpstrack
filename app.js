@@ -45,7 +45,9 @@ var tcpServer = net.createServer(function (socket) {
   socket.on('data', function (data){
     console.log(data.toString());
     socket.write('hello\r\n');
-    pub.publish("gpsdata", data.toString());
+    if(data.toString){
+      pub.publish("gpsdata", data.toString());
+    }
   })
 
   socket.write('hello\r\n');
@@ -53,7 +55,7 @@ var tcpServer = net.createServer(function (socket) {
 });
 
 tcpServer.listen(3005,'139.59.239.80', function(){
-// tcpServer.listen(3005,'192.168.0.103', function(){
+// tcpServer.listen(3005,'192.168.0.100', function(){
   console.log('Tcp server started on localhost:3005');
 });
 
